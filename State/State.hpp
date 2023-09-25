@@ -5,13 +5,14 @@
 #include "../SDL_include.h"
 #include "../Sprite/Sprite.hpp"
 #include "../Music/Music.hpp"
+#include "../GameObject/GameObject.hpp"
 
 class State
 {
 private:
-  Sprite bg;
   Music music;
   bool quitRequested;
+  std::vector<GameObject *> objectArray;
 
 public:
   State();
@@ -20,4 +21,5 @@ public:
   void Update(float dt);
   void Render();
   bool QuitRequested();
+  void AddObject(int mouseX, int mouseY);
 };

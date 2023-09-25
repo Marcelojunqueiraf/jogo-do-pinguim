@@ -1,11 +1,11 @@
 #include "Sprite.hpp"
 
-Sprite::Sprite()
+Sprite::Sprite(GameObject *associated) : Component(associated)
 {
   texture = nullptr;
 }
 
-Sprite::Sprite(std::string file)
+Sprite::Sprite(std::string file, GameObject *associated) : Component(associated)
 {
   texture = nullptr;
   Open(file);
@@ -66,4 +66,18 @@ int Sprite::GetHeight()
 bool Sprite::IsOpen()
 {
   return texture != nullptr;
+}
+
+void Sprite::Update(float dt)
+{
+}
+
+void Sprite::Render()
+{
+  Render(this->associated->box.x, this->associated->box.y);
+};
+
+bool Sprite::Is(std::string type)
+{
+  return type == "Sprite";
 }
