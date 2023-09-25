@@ -29,6 +29,13 @@ Game::Game(std::string title, int width, int height)
 
   if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) != 0)
   {
+    Mix_VolumeMusic(10);
+
+    for (int i = 0; i < 32; i++)
+    {
+      Mix_Volume(i, 10);
+    }
+
     std::cerr << SDL_GetError() << std::endl;
     std::terminate();
   }

@@ -24,36 +24,20 @@ void State::LoadAssets()
 
 void State::Update(float dt)
 {
-  SDL_Event event;
-  while (SDL_PollEvent(&event))
-  {
-    if (event.type == SDL_QUIT)
-    {
-      quitRequested = true;
-    }
-    // mouse click
-    if (event.type == SDL_MOUSEBUTTONDOWN)
-    {
-      int mouseX = event.button.x;
-      int mouseY = event.button.y;
-      if (event.button.button == SDL_BUTTON_LEFT)
-      {
-        // posicionar um objeto em uma posição aleatória em um circulo ao redor da posição do mouse
-        float angulo = 0.01 * (rand() % 700);
-        float raio = 150;
-        float x = mouseX + raio * cos(angulo) - 50;
-        float y = mouseY + raio * sin(angulo) - 50;
-        this->AddObject(x, y);
-      }
-      else if (event.button.button == SDL_BUTTON_RIGHT)
-      {
-      }
-    }
-  }
+  Input();
 
-  for (GameObject *go : objectArray)
+  for (int i = 0; i < objectArray.size(); i++)
   {
-    go->Update(dt);
+    GameObject *go = objectArray[i];
+    if (go->IsDead())
+    {
+      objectArray.erase(objectArray.begin() + i);
+      delete go;
+    }
+    else
+    {
+      go->Update(dt);
+    }
   }
 }
 
@@ -79,5 +63,62 @@ void State::AddObject(int mouseX, int mouseY)
   go->AddComponent(sp);
   go->box.x = mouseX - go->box.w / 2;
   go->box.y = mouseY - go->box.h / 2;
+  go->box.w = sp->GetWidth();
+  go->box.h = sp->GetHeight();
+
+  Face *face = new Face(go);
+  go->AddComponent(face);
+  Sound *sound = new Sound("audio/boom.wav", go);
+  go->AddComponent(sound);
+
   this->objectArray.push_back(go);
+}
+
+void State::Input()
+{
+  SDL_Event event;
+  int mouseX, mouseY;
+
+  while (SDL_PollEvent(&event))
+  {
+    SDL_GetMouseState(&mouseX, &mouseY);
+    if (event.type == SDL_QUIT)
+    {
+      quitRequested = true;
+    }
+
+    if (event.type == SDL_MOUSEBUTTONDOWN)
+    {
+
+      for (int i = objectArray.size() - 1; i >= 0; --i)
+      {
+        GameObject *go = objectArray[i];
+
+        if (go->box.Contains((float)mouseX, (float)mouseY))
+        {
+          Face *face = (Face *)go->GetComponent("Face");
+          if (nullptr != face)
+          {
+            face->Damage(10);
+            break;
+          }
+        }
+      }
+    }
+    if (event.type == SDL_KEYDOWN)
+    {
+      if (event.key.keysym.sym == SDLK_ESCAPE)
+      {
+        quitRequested = true;
+      }
+      else
+      {
+        float angulo = 0.01 * (rand() % 700);
+        float raio = 150;
+        float x = mouseX + raio * cos(angulo) - 50;
+        float y = mouseY + raio * sin(angulo) - 50;
+        this->AddObject(x, y);
+      }
+    }
+  }
 }

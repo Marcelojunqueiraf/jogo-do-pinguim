@@ -15,6 +15,15 @@ GameObject::~GameObject()
 
 void GameObject::Update(float dt)
 {
+  if (this->IsDead())
+  {
+    for (Component *component : this->components)
+    {
+      delete component;
+    }
+    this->components.clear();
+  }
+
   for (Component *component : this->components)
   {
     component->Update(dt);
