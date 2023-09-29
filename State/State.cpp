@@ -4,11 +4,6 @@ State::State()
 {
   quitRequested = false;
   objectArray = std::vector<GameObject *>();
-
-  GameObject *tileGo = new GameObject();
-  this->objectArray.push_back(tileGo);
-  TileMap *tileMap = new TileMap(tileGo, "Assets/map/tileMap.txt", new TileSet(64, 64, "Assets/img/tileset.png"));
-  tileGo->AddComponent(tileMap);
   LoadAssets();
 }
 
@@ -25,6 +20,11 @@ void State::LoadAssets()
   go->AddComponent(bg);
   music.Open("Assets/audio/stageState.ogg");
   music.Play();
+
+  GameObject *tileGo = new GameObject();
+  this->objectArray.push_back(tileGo);
+  TileMap *tileMap = new TileMap(tileGo, "Assets/map/tileMap.txt", new TileSet(64, 64, "Assets/img/tileset.png"));
+  tileGo->AddComponent(tileMap);
 }
 
 void State::Update(float dt)

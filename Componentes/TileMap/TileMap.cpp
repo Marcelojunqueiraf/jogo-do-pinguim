@@ -74,8 +74,6 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY)
   {
     for (int j = 0; j < mapWidth; j++)
     {
-      std::cout << "Renderizando TileMap" << std::endl;
-
       tileSet->RenderTile(*At(j, i, layer), j * tileSet->GetTileWidth() - cameraX, i * tileSet->GetTileHeight() - cameraY);
     }
   }
