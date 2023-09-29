@@ -2,9 +2,9 @@
 
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
-#include "../SDL_include.h"
-#include "../Game/Game.hpp"
-#include "../GameObject/GameObject.hpp"
+#include "../../SDL_include.h"
+#include "../../Game/Game.hpp"
+#include "../../GameObject/GameObject.hpp"
 #include <iostream>
 
 class Sprite : public Component

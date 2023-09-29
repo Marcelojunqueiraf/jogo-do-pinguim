@@ -4,6 +4,11 @@ State::State()
 {
   quitRequested = false;
   objectArray = std::vector<GameObject *>();
+
+  GameObject *tileGo = new GameObject();
+  this->objectArray.push_back(tileGo);
+  TileMap *tileMap = new TileMap(tileGo, "Assets/map/tileMap.txt", new TileSet(64, 64, "Assets/img/tileset.png"));
+  tileGo->AddComponent(tileMap);
   LoadAssets();
 }
 
@@ -16,9 +21,9 @@ void State::LoadAssets()
   GameObject *go = new GameObject();
   this->objectArray.push_back(go);
 
-  Sprite *bg = new Sprite("img/ocean.jpg", go);
+  Sprite *bg = new Sprite("Assets/img/ocean.jpg", go);
   go->AddComponent(bg);
-  music.Open("audio/stageState.ogg");
+  music.Open("Assets/audio/stageState.ogg");
   music.Play();
 }
 
@@ -59,7 +64,7 @@ bool State::QuitRequested()
 void State::AddObject(int mouseX, int mouseY)
 {
   GameObject *go = new GameObject();
-  Sprite *sp = new Sprite("img/penguinface.png", go);
+  Sprite *sp = new Sprite("Assets/img/penguinface.png", go);
   go->AddComponent(sp);
   go->box.x = mouseX - go->box.w / 2;
   go->box.y = mouseY - go->box.h / 2;
@@ -68,7 +73,7 @@ void State::AddObject(int mouseX, int mouseY)
 
   Face *face = new Face(go);
   go->AddComponent(face);
-  Sound *sound = new Sound("audio/boom.wav", go);
+  Sound *sound = new Sound("Assets/audio/boom.wav", go);
   go->AddComponent(sound);
 
   this->objectArray.push_back(go);

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../GameObject/GameObject.hpp"
+#include "../../GameObject/GameObject.hpp"
 #include <iostream>
 
 #define INCLUDE_SDL_MIXER
-#include "../SDL_include.h"
+#include "../../SDL_include.h"
 
 class Sound : public Component
 {

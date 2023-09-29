@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "../Component/Component.hpp"
-#include "../Rect/Rect.hpp"
+#include "../Componentes/Component/Component.hpp"
+#include "../Utils/Rect/Rect.hpp"
 
 class Component;
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Component/Component.hpp"
-#include "../GameObject/GameObject.hpp"
+#include "../../GameObject/GameObject.hpp"
 #include "../Sound/Sound.hpp"
 
 class Face : public Component
