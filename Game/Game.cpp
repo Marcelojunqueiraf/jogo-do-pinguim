@@ -96,4 +96,5 @@ Game::~Game()
   Mix_Quit();
   IMG_Quit();
   SDL_Quit();
+  Resources::ClearResources();
 }

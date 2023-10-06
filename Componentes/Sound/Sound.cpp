@@ -31,7 +31,7 @@ void Sound::Stop()
 
 void Sound::Open(std::string file)
 {
-  this->chunk = Mix_LoadWAV(file.c_str());
+  this->chunk = Resources::GetSound(file);
   if (this->chunk == nullptr)
   {
     std::cerr << SDL_GetError() << std::endl;
