@@ -66,10 +66,13 @@ void GameObject::RemoveComponent(Component *cpt)
 
 Component *GameObject::GetComponent(std::string type)
 {
+  std::cout << "GameObject::GetComponent " << type << " " << this->components.size() << std::endl;
   for (int i = 0; i < this->components.size(); i++)
   {
+    std::cout << i << std::endl;
     if (this->components[i]->Is(type))
     {
+      std::cout << "found" << std::endl;
       return this->components[i];
     }
   }

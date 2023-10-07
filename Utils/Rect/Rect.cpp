@@ -21,3 +21,14 @@ bool Rect::Contains(float x, float y)
 {
   return (x >= this->x && x <= this->x + this->w && y >= this->y && y <= this->y + this->h);
 }
+
+void Rect::SetCenter(float x, float y)
+{
+  this->x = x - this->w / 2;
+  this->y = y - this->h / 2;
+}
+
+Vec2 Rect::GetCenter()
+{
+  return Vec2(this->x + this->w / 2, this->y + this->h / 2);
+}

@@ -44,6 +44,9 @@ void Sprite::Render(int x, int y)
   SDL_Rect dstrect;
   dstrect.x = x;
   dstrect.y = y;
+  Camera &camera = Camera::GetInstance();
+  dstrect.x -= camera.pos.x;
+  dstrect.y -= camera.pos.y;
   dstrect.w = clipRect.w;
   dstrect.h = clipRect.h;
   SDL_RenderCopy(Game::getInstance()->GetRenderer(), texture, &clipRect, &dstrect);

@@ -2,6 +2,7 @@
 #include "../Component/Component.hpp"
 #include "../../GameObject/GameObject.hpp"
 #include "../Sound/Sound.hpp"
+#include "../../Utils/InputManager/InputManager.hpp"
 
 class Face : public Component
 {

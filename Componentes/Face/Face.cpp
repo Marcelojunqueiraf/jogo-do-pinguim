@@ -28,6 +28,15 @@ void Face::Damage(int damage)
 
 void Face::Update(float dt)
 {
+  InputManager &input = InputManager::GetInstance();
+
+  if (input.MousePress(LEFT_MOUSE_BUTTON))
+  {
+    if (this->associated->box.Contains((float)input.GetMouseX(), (float)input.GetMouseY()))
+    {
+      this->Damage(10);
+    }
+  }
 }
 
 void Face::Render()

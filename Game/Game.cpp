@@ -52,6 +52,8 @@ Game::Game(std::string title, int width, int height)
     std::terminate();
   }
 
+  frameStart = SDL_GetTicks();
+
   run();
 }
 
@@ -74,7 +76,8 @@ void Game::run()
   bool running = true;
   while (running)
   {
-    state->Update(33);
+    this->CalculateDeltaTime();
+    state->Update(this->dt);
     state->Render();
 
     if (state->QuitRequested())
@@ -97,4 +100,24 @@ Game::~Game()
   IMG_Quit();
   SDL_Quit();
   Resources::ClearResources();
+}
+
+void Game::CalculateDeltaTime()
+{
+  dt = (SDL_GetTicks() - frameStart) / 1000.0;
+  frameStart = SDL_GetTicks();
+}
+
+int Game::GetWidth()
+{
+  int w;
+  SDL_GetWindowSize(window, &w, nullptr);
+  return w;
+}
+
+int Game::GetHeight()
+{
+  int h;
+  SDL_GetWindowSize(window, nullptr, &h);
+  return h;
 }

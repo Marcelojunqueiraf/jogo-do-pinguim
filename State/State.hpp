@@ -11,6 +11,9 @@
 #include "../Componentes/Face/Face.hpp"
 #include "../Componentes/Sound/Sound.hpp"
 #include "../Componentes/TileMap/TileMap.hpp"
+#include "../Componentes/CameraFollower/CameraFollower.hpp"
+#include "../Utils/InputManager/InputManager.hpp"
+#include "../Camera/Camera.hpp"
 
 class State
 {
@@ -18,7 +21,6 @@ private:
   Music music;
   bool quitRequested;
   std::vector<GameObject *> objectArray;
-  void Input();
 
 public:
   State();
