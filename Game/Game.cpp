@@ -73,6 +73,8 @@ void Game::run()
 {
   State *state = new State();
 
+  state->Start();
+
   bool running = true;
   while (running)
   {

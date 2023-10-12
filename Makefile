@@ -1,4 +1,4 @@
-COMPONENTES=Componentes/Sprite/Sprite.cpp Componentes/Component/Component.cpp Componentes/Face/Face.cpp Componentes/Sound/Sound.cpp Componentes/TileMap/TileMap.cpp Componentes/CameraFollower/CameraFollower.cpp
+COMPONENTES=Componentes/Sprite/Sprite.cpp Componentes/Component/Component.cpp Componentes/Sound/Sound.cpp Componentes/TileMap/TileMap.cpp Componentes/CameraFollower/CameraFollower.cpp Componentes/Alien/Alien.cpp
 UTILS=Utils/Vec2/Vec2.cpp Utils/Rect/Rect.cpp Utils/TileSet/TileSet.cpp Utils/Resources/Resources.cpp Utils/InputManager/InputManager.cpp Camera/Camera.cpp
 FILES=Game/Game.cpp State/State.cpp  Music/Music.cpp GameObject/GameObject.cpp 
 all:

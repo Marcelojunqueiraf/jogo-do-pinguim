@@ -92,12 +92,14 @@ bool InputManager::IsMouseDown(int button)
 
 int InputManager::GetMouseX()
 {
-  return mouseX;
+  Camera &camera = Camera::GetInstance();
+  return mouseX + camera.pos.x;
 }
 
 int InputManager::GetMouseY()
 {
-  return mouseY;
+  Camera &camera = Camera::GetInstance();
+  return mouseY + camera.pos.y;
 }
 
 bool InputManager::QuitRequested()

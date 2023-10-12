@@ -3,7 +3,6 @@
 
 TileMap::TileMap(GameObject *associated, std::string file, TileSet *tileSet) : Component(associated)
 {
-  std::cout << "Criando TileMap" << std::endl;
   this->tileSet = tileSet;
   Load(file);
 }
@@ -25,7 +24,7 @@ void TileMap::Load(std::string file)
     std::cout << "line: " << line << std::endl;
     mapDepth = std::stoi(line);
 
-    std::getline(tileMapFile, line, ',');
+    // std::getline(tileMapFile, line, ',');
 
     int tileNumber;
     while (std::getline(tileMapFile, line, ','))
@@ -68,13 +67,14 @@ void TileMap::Render()
   }
 }
 
-void TileMap::RenderLayer(int layer, int cameraX, int cameraY)
+void TileMap::RenderLayer(int layer)
 {
   for (int i = 0; i < mapHeight; i++)
   {
     for (int j = 0; j < mapWidth; j++)
     {
-      tileSet->RenderTile(*At(j, i, layer), j * tileSet->GetTileWidth() - cameraX, i * tileSet->GetTileHeight() - cameraY);
+      Vec2 cameraPos = Camera::GetInstance().pos;
+      tileSet->RenderTile(*At(j, i, layer), j * tileSet->GetTileWidth() - cameraPos.x * 0.3 * layer, i * tileSet->GetTileHeight() - cameraPos.y * 0.3 * layer);
     }
   }
 }
@@ -100,5 +100,9 @@ bool TileMap::Is(std::string type)
 }
 
 void TileMap::Update(float dt)
+{
+}
+
+void TileMap::Start()
 {
 }

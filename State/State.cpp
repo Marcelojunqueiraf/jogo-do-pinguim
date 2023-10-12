@@ -3,8 +3,7 @@
 State::State()
 {
   quitRequested = false;
-  objectArray = std::vector<GameObject *>();
-  LoadAssets();
+  objectArray = std::vector<std::shared_ptr<GameObject>>();
 }
 
 State::~State()
@@ -14,7 +13,6 @@ State::~State()
 void State::LoadAssets()
 {
   GameObject *go = new GameObject();
-  this->objectArray.push_back(go);
 
   Sprite *bg = new Sprite("Assets/img/ocean.jpg", go);
   go->AddComponent(bg);
@@ -22,13 +20,21 @@ void State::LoadAssets()
   CameraFollower *cameraFollower = new CameraFollower(go);
   go->AddComponent(cameraFollower);
 
+  this->AddObject(go);
+
   music.Open("Assets/audio/stageState.ogg");
   music.Play();
 
   GameObject *tileGo = new GameObject();
-  this->objectArray.push_back(tileGo);
   TileMap *tileMap = new TileMap(tileGo, "Assets/map/tileMap.txt", new TileSet(64, 64, "Assets/img/tileset.png"));
   tileGo->AddComponent(tileMap);
+  this->AddObject(tileGo);
+
+  // Alien
+  GameObject *alien = new GameObject();
+  Alien *alienComponent = new Alien(alien, 4);
+  alien->AddComponent(alienComponent);
+  this->AddObject(alien);
 }
 
 void State::Update(float dt)
@@ -38,15 +44,6 @@ void State::Update(float dt)
 
   Camera::GetInstance().Update(dt);
 
-  if (input.KeyPress(SDLK_SPACE))
-  {
-    float angulo = 0.01 * (rand() % 700);
-    float raio = 150;
-    float x = input.GetMouseX() + raio * cos(angulo) - 50;
-    float y = input.GetMouseY() + raio * sin(angulo) - 50;
-    this->AddObject(x, y);
-  }
-
   if (input.QuitRequested() || input.KeyPress(ESCAPE_KEY))
   {
     quitRequested = true;
@@ -54,24 +51,28 @@ void State::Update(float dt)
 
   for (int i = 0; i < objectArray.size(); i++)
   {
-    GameObject *go = objectArray[i];
-    if (go->IsDead())
+    std::weak_ptr<GameObject> go = objectArray[i];
+    if (auto lock = go.lock())
     {
-      objectArray.erase(objectArray.begin() + i);
-      delete go;
-    }
-    else
-    {
-      go->Update(dt);
+      if (lock->IsDead())
+      {
+        objectArray.erase(objectArray.begin() + i);
+      }
+      else
+      {
+        lock->Update(dt);
+      }
     }
   }
 }
 
 void State::Render()
 {
-  for (GameObject *go : this->objectArray)
+  for (auto SharedGo : this->objectArray)
   {
-    go->Render();
+    std::weak_ptr<GameObject> go = SharedGo;
+    if (auto lock = go.lock())
+      lock->Render();
   }
 
   SDL_RenderPresent(Game::getInstance()->GetRenderer());
@@ -82,20 +83,37 @@ bool State::QuitRequested()
   return quitRequested;
 }
 
-void State::AddObject(int mouseX, int mouseY)
+void State::Start()
 {
-  GameObject *go = new GameObject();
-  Sprite *sp = new Sprite("Assets/img/penguinface.png", go);
-  go->AddComponent(sp);
-  go->box.x = mouseX - go->box.w / 2;
-  go->box.y = mouseY - go->box.h / 2;
-  go->box.w = sp->GetWidth();
-  go->box.h = sp->GetHeight();
+  LoadAssets();
 
-  Face *face = new Face(go);
-  go->AddComponent(face);
-  Sound *sound = new Sound("Assets/audio/boom.wav", go);
-  go->AddComponent(sound);
+  for (auto go : objectArray)
+  {
+    go->Start();
+  }
 
-  this->objectArray.push_back(go);
+  this->started = true;
+}
+
+std::weak_ptr<GameObject> State::AddObject(GameObject *go)
+{
+  std::shared_ptr<GameObject> sharedGo(go);
+  this->objectArray.push_back(sharedGo);
+  if (started)
+  {
+    go->Start();
+  }
+  return std::weak_ptr<GameObject>(sharedGo);
+}
+
+std::weak_ptr<GameObject> State::GetObjectPtr(GameObject *go)
+{
+  for (int i = 0; i < objectArray.size(); i++)
+  {
+    if (objectArray[i].get() == go)
+    {
+      return objectArray[i];
+    }
+  }
+  return std::weak_ptr<GameObject>();
 }

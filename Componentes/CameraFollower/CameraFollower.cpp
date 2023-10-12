@@ -19,3 +19,7 @@ bool CameraFollower::Is(std::string type)
 {
   return type == "CameraFollower";
 }
+
+void CameraFollower::Start()
+{
+}

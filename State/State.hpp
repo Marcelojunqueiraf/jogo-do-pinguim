@@ -3,15 +3,19 @@
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
 #include "../SDL_include.h"
+
+#include <memory>
+#include <vector>
+
 #include "../Componentes/Sprite/Sprite.hpp"
 #include "../Music/Music.hpp"
 #include "../GameObject/GameObject.hpp"
 #include "../Utils/Vec2/Vec2.hpp"
 #include "../Utils/Rect/Rect.hpp"
-#include "../Componentes/Face/Face.hpp"
 #include "../Componentes/Sound/Sound.hpp"
 #include "../Componentes/TileMap/TileMap.hpp"
 #include "../Componentes/CameraFollower/CameraFollower.hpp"
+#include "../Componentes/Alien/Alien.hpp"
 #include "../Utils/InputManager/InputManager.hpp"
 #include "../Camera/Camera.hpp"
 
@@ -20,7 +24,8 @@ class State
 private:
   Music music;
   bool quitRequested;
-  std::vector<GameObject *> objectArray;
+  bool started;
+  std::vector<std::shared_ptr<GameObject>> objectArray;
 
 public:
   State();
@@ -29,5 +34,7 @@ public:
   void Update(float dt);
   void Render();
   bool QuitRequested();
-  void AddObject(int mouseX, int mouseY);
+  void Start();
+  std::weak_ptr<GameObject> AddObject(GameObject *go);
+  std::weak_ptr<GameObject> GetObjectPtr(GameObject *go);
 };

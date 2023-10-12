@@ -29,6 +29,11 @@ void Sprite::Open(std::string file)
   }
   SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
   SetClip(0, 0, width, height);
+  if (associated != nullptr)
+  {
+    associated->box.w = width / 2;
+    associated->box.h = height / 2;
+  }
 }
 
 void Sprite::SetClip(int x, int y, int w, int h)
@@ -42,11 +47,9 @@ void Sprite::SetClip(int x, int y, int w, int h)
 void Sprite::Render(int x, int y)
 {
   SDL_Rect dstrect;
-  dstrect.x = x;
-  dstrect.y = y;
   Camera &camera = Camera::GetInstance();
-  dstrect.x -= camera.pos.x;
-  dstrect.y -= camera.pos.y;
+  dstrect.x = x - camera.pos.x;
+  dstrect.y = y - camera.pos.y;
   dstrect.w = clipRect.w;
   dstrect.h = clipRect.h;
   SDL_RenderCopy(Game::getInstance()->GetRenderer(), texture, &clipRect, &dstrect);
@@ -79,4 +82,8 @@ void Sprite::Render()
 bool Sprite::Is(std::string type)
 {
   return type == "Sprite";
+}
+
+void Sprite::Start()
+{
 }

@@ -18,7 +18,7 @@ TileSet::TileSet(int tileWidth, int tileHeight, std::string file)
 
 void TileSet::RenderTile(unsigned index, float x, float y)
 {
-  if (index < rows * columns)
+  if (index >= 0 && index < rows * columns)
   {
     int tileX = (index % columns) * tileWidth;
     int tileY = (index / columns) * tileHeight;

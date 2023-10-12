@@ -10,12 +10,14 @@ class GameObject
 {
 private:
   bool isDead;
+  bool started;
   std::vector<Component *> components;
 
 public:
   Rect box;
   GameObject();
   ~GameObject();
+  void Start();
   void Update(float dt);
   void Render();
   bool IsDead();
