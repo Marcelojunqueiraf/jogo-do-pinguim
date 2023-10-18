@@ -17,8 +17,8 @@ private:
   SDL_Rect clipRect;
 
 public:
-  Sprite(GameObject *associated);
-  Sprite(std::string file, GameObject *associated);
+  Sprite(std::weak_ptr<GameObject> associated);
+  Sprite(std::string file, std::weak_ptr<GameObject> associated);
   ~Sprite();
   void Start();
   void Open(std::string file);

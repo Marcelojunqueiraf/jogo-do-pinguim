@@ -4,14 +4,18 @@
 #define INCLUDE_SDL_MIXER
 #include "../SDL_include.h"
 #include "../State/State.hpp"
+#include <memory>
 #include <string>
+
+class State;
 
 class Game
 {
 private:
   static Game *instance;
-  SDL_Renderer *renderer;
-  SDL_Window *window;
+  std::shared_ptr<State> state;
+  std::shared_ptr<SDL_Renderer> renderer;
+  std::shared_ptr<SDL_Window> window;
   bool running;
   int frameStart;
   float dt;
@@ -19,10 +23,11 @@ private:
   Game(std::string title, int width, int height);
 
 public:
-  static Game *getInstance();
+  static Game *GetInstance();
   void run();
-  SDL_Renderer *GetRenderer();
+  std::weak_ptr<SDL_Renderer> GetRenderer();
   int GetWidth();
   int GetHeight();
   ~Game();
+  std::weak_ptr<State> GetCurrentState();
 };

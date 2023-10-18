@@ -15,8 +15,8 @@ private:
   int channel;
 
 public:
-  Sound(GameObject *associated);
-  Sound(std::string file, GameObject *associated);
+  Sound(std::weak_ptr<GameObject> associated);
+  Sound(std::string file, std::weak_ptr<GameObject> associated);
   ~Sound();
   void Start();
   void Play(int times = 1);

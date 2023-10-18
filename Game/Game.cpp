@@ -6,7 +6,6 @@ Game *Game::instance = nullptr;
 
 Game::Game(std::string title, int width, int height)
 {
-  Game::instance = this;
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0)
   {
@@ -38,41 +37,37 @@ Game::Game(std::string title, int width, int height)
     std::cerr << SDL_GetError() << std::endl;
     std::terminate();
   }
-  window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+  auto window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
   if (window == nullptr)
   {
     std::cerr << SDL_GetError() << std::endl;
     std::terminate();
   }
+  this->window = std::shared_ptr<SDL_Window>(window, SDL_DestroyWindow);
 
-  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+  auto renderer = SDL_CreateRenderer(this->window.get(), -1, SDL_RENDERER_ACCELERATED);
   if (renderer == nullptr)
   {
     std::cerr << SDL_GetError() << std::endl;
     std::terminate();
   }
+  this->renderer = std::shared_ptr<SDL_Renderer>(renderer, SDL_DestroyRenderer);
 
   frameStart = SDL_GetTicks();
-
-  run();
 }
 
-Game *Game::getInstance()
+Game *Game::GetInstance()
 {
-  if (Game::instance == NULL)
+  if (Game::instance == nullptr)
   {
-    return new Game("Marcelo Junqueira 200023624", 1024, 600);
+    Game::instance = new Game("Marcelo Junqueira 200023624", 1024, 600);
   }
-  else
-  {
-    return instance;
-  }
+  return Game::instance;
 }
 
 void Game::run()
 {
-  State *state = new State();
-
+  state = std::make_shared<State>();
   state->Start();
 
   bool running = true;
@@ -88,15 +83,8 @@ void Game::run()
   }
 }
 
-SDL_Renderer *Game::GetRenderer()
-{
-  return renderer;
-}
-
 Game::~Game()
 {
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
   Mix_CloseAudio();
   Mix_Quit();
   IMG_Quit();
@@ -113,13 +101,23 @@ void Game::CalculateDeltaTime()
 int Game::GetWidth()
 {
   int w;
-  SDL_GetWindowSize(window, &w, nullptr);
+  SDL_GetWindowSize(this->window.get(), &w, nullptr);
   return w;
 }
 
 int Game::GetHeight()
 {
   int h;
-  SDL_GetWindowSize(window, nullptr, &h);
+  SDL_GetWindowSize(this->window.get(), nullptr, &h);
   return h;
+}
+
+std::weak_ptr<SDL_Renderer> Game::GetRenderer()
+{
+  return renderer;
+}
+
+std::weak_ptr<State> Game::GetCurrentState()
+{
+  return state;
 }

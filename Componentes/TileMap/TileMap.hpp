@@ -17,7 +17,7 @@ private:
   int mapDepth;
 
 public:
-  TileMap(GameObject *associated, std::string file, TileSet *tileSet);
+  TileMap(std::weak_ptr<GameObject> associated, std::string file, TileSet *tileSet);
   void Start();
   void Load(std::string file);
   void SetTileSet(TileSet *tileSet);

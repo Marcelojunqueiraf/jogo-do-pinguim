@@ -7,7 +7,7 @@
 class CameraFollower : public Component
 {
 public:
-  CameraFollower(GameObject *associated);
+  CameraFollower(std::weak_ptr<GameObject> associated);
   void Start();
   void Update(float dt);
   void Render();

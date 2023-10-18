@@ -7,6 +7,7 @@
 #include "../../Utils/Vec2/Vec2.hpp"
 #include "../../Utils/InputManager/InputManager.hpp"
 #include "../Sprite/Sprite.hpp"
+#include "../Minion/Minion.hpp"
 
 class Alien : public Component
 {
@@ -24,13 +25,13 @@ private:
     Vec2 pos;
   };
 
-  Vec2 speed;
+  float speed;
   int hp;
   std::vector<std::weak_ptr<GameObject>> minionArray;
   std::queue<Action> taskQueue;
 
 public:
-  Alien(GameObject *associated, int nMinions);
+  Alien(std::weak_ptr<GameObject> associated, int nMinions);
   ~Alien();
   void Start();
   void Update(float dt);

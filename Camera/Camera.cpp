@@ -14,7 +14,7 @@ void Camera::Update(float dt)
 {
   if (focus != nullptr)
   {
-    this->pos = focus->box.GetCenter() - Vec2(Game::getInstance()->GetWidth() / 2, Game::getInstance()->GetHeight() / 2);
+    this->pos = focus->box.GetCenter() - Vec2(Game::GetInstance()->GetWidth() / 2, Game::GetInstance()->GetHeight() / 2);
   }
   else
   {

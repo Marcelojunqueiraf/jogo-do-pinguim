@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <memory>
 #include "../Componentes/Component/Component.hpp"
 #include "../Utils/Rect/Rect.hpp"
 
@@ -11,7 +12,7 @@ class GameObject
 private:
   bool isDead;
   bool started;
-  std::vector<Component *> components;
+  std::vector<std::shared_ptr<Component>> components;
 
 public:
   Rect box;
@@ -24,5 +25,5 @@ public:
   void RequestDelete();
   void AddComponent(Component *cpt);
   void RemoveComponent(Component *cpt);
-  Component *GetComponent(std::string type);
+  std::weak_ptr<Component> GetComponent(std::string type);
 };

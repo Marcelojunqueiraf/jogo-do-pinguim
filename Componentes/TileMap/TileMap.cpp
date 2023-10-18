@@ -1,7 +1,7 @@
 #include "TileMap.hpp"
 #include <fstream>
 
-TileMap::TileMap(GameObject *associated, std::string file, TileSet *tileSet) : Component(associated)
+TileMap::TileMap(std::weak_ptr<GameObject> associated, std::string file, TileSet *tileSet) : Component(associated)
 {
   this->tileSet = tileSet;
   Load(file);
@@ -17,11 +17,9 @@ void TileMap::Load(std::string file)
     mapWidth = std::stoi(line);
 
     std::getline(tileMapFile, line, ',');
-    std::cout << "line: " << line << std::endl;
     mapHeight = std::stoi(line);
 
     std::getline(tileMapFile, line, ',');
-    std::cout << "line: " << line << std::endl;
     mapDepth = std::stoi(line);
 
     // std::getline(tileMapFile, line, ',');

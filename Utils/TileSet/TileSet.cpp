@@ -5,7 +5,7 @@ TileSet::TileSet(int tileWidth, int tileHeight, std::string file)
   this->tileWidth = tileWidth;
   this->tileHeight = tileHeight;
 
-  tileSet = new Sprite(file, nullptr);
+  tileSet = new Sprite(file, std::weak_ptr<GameObject>());
   if (tileSet == nullptr)
   {
     std::cout << "TileSet::TileSet: tileSet is nullptr" << std::endl;
@@ -13,7 +13,6 @@ TileSet::TileSet(int tileWidth, int tileHeight, std::string file)
   }
   columns = tileSet->GetWidth() / tileWidth;
   rows = tileSet->GetHeight() / tileHeight;
-  std::cout << "Criou Tileset" << std::endl;
 }
 
 void TileSet::RenderTile(unsigned index, float x, float y)

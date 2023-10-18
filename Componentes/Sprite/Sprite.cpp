@@ -1,11 +1,11 @@
 #include "Sprite.hpp"
 
-Sprite::Sprite(GameObject *associated) : Component(associated)
+Sprite::Sprite(std::weak_ptr<GameObject> associated) : Component(associated)
 {
   texture = nullptr;
 }
 
-Sprite::Sprite(std::string file, GameObject *associated) : Component(associated)
+Sprite::Sprite(std::string file, std::weak_ptr<GameObject> associated) : Component(associated)
 {
   texture = nullptr;
   Open(file);
@@ -13,6 +13,10 @@ Sprite::Sprite(std::string file, GameObject *associated) : Component(associated)
 
 Sprite::~Sprite()
 {
+  if (texture != nullptr)
+  {
+    SDL_DestroyTexture(texture);
+  }
 }
 
 void Sprite::Open(std::string file)
@@ -29,10 +33,10 @@ void Sprite::Open(std::string file)
   }
   SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
   SetClip(0, 0, width, height);
-  if (associated != nullptr)
+  if (!associated.expired())
   {
-    associated->box.w = width / 2;
-    associated->box.h = height / 2;
+    associated.lock()->box.w = width / 2;
+    associated.lock()->box.h = height / 2;
   }
 }
 
@@ -52,7 +56,7 @@ void Sprite::Render(int x, int y)
   dstrect.y = y - camera.pos.y;
   dstrect.w = clipRect.w;
   dstrect.h = clipRect.h;
-  SDL_RenderCopy(Game::getInstance()->GetRenderer(), texture, &clipRect, &dstrect);
+  SDL_RenderCopy(Game::GetInstance()->GetRenderer().lock().get(), texture, &clipRect, &dstrect);
 }
 
 int Sprite::GetWidth()
@@ -76,7 +80,7 @@ void Sprite::Update(float dt)
 
 void Sprite::Render()
 {
-  Render(this->associated->box.x, this->associated->box.y);
+  Render(this->associated.lock()->box.x, this->associated.lock()->box.y);
 };
 
 bool Sprite::Is(std::string type)

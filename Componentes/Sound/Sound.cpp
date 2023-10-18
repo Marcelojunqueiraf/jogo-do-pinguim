@@ -1,11 +1,11 @@
 #include "Sound.hpp"
 
-Sound::Sound(GameObject *associated) : Component(associated)
+Sound::Sound(std::weak_ptr<GameObject> associated) : Component(associated)
 {
   this->chunk = nullptr;
 }
 
-Sound::Sound(std::string file, GameObject *associated) : Sound(associated)
+Sound::Sound(std::string file, std::weak_ptr<GameObject> associated) : Sound(associated)
 {
   this->Open(file);
 }

@@ -1,14 +1,24 @@
 #include "./Alien.hpp"
 
-Alien::Alien(GameObject *associated, int nMinions) : Component(associated)
+Alien::Alien(std::weak_ptr<GameObject> associated, int nMinions) : Component(associated)
 {
   Sprite *alienSprite = new Sprite("Assets/img/alien.png", associated);
-  associated->AddComponent(alienSprite);
+  associated.lock()->AddComponent(alienSprite);
 
-  this->speed = Vec2(100, 0);
+  this->speed = 200;
   this->hp = 30;
   this->minionArray = std::vector<std::weak_ptr<GameObject>>();
   this->taskQueue = std::queue<Action>();
+
+  for (int i = 0; i < nMinions; i++)
+  {
+    GameObject *minionGO = new GameObject();
+
+    std::weak_ptr<GameObject> minionPtr = Game::GetInstance()->GetCurrentState().lock()->AddObject(minionGO);
+    this->minionArray.push_back(minionPtr);
+    Minion *minion = new Minion(minionPtr, associated, i * (2 * M_PI / nMinions));
+    minionGO->AddComponent(minion);
+  }
 }
 
 Alien::~Alien()
@@ -23,8 +33,8 @@ void Alien::Start()
     std::shared_ptr<GameObject> minionPtr = this->minionArray[i].lock();
     if (minionPtr)
     {
-      minionPtr->box.x = this->associated->box.x + (i * 110);
-      minionPtr->box.y = this->associated->box.y;
+      minionPtr->box.x = this->associated.lock()->box.x + (i * 110);
+      minionPtr->box.y = this->associated.lock()->box.y;
     }
   }
 }
@@ -34,8 +44,8 @@ void Alien::Update(float dt)
   if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
   {
     InputManager &input = InputManager::GetInstance();
-    int x = input.GetMouseX() - this->associated->box.w / 2;
-    int y = input.GetMouseY() - this->associated->box.h / 2;
+    int x = input.GetMouseX() - this->associated.lock()->box.w / 2;
+    int y = input.GetMouseY() - this->associated.lock()->box.h / 2;
     this->taskQueue.push(Action(Action::MOVE, x, y));
   }
 
@@ -44,12 +54,12 @@ void Alien::Update(float dt)
     Action action = this->taskQueue.front();
     if (action.type == Action::ActionType::MOVE)
     {
-      Vec2 dist = action.pos - this->associated->box.GetCenter();
-      if (dist.magnitude() > 100 * dt)
+      Vec2 dist = action.pos - this->associated.lock()->box.GetCenter();
+      if (dist.magnitude() > this->speed * dt)
       {
-        Vec2 velocity = dist.normalize() * 100;
-        this->associated->box.x += velocity.x * dt;
-        this->associated->box.y += velocity.y * dt;
+        Vec2 velocity = dist.normalize() * this->speed;
+        this->associated.lock()->box.x += velocity.x * dt;
+        this->associated.lock()->box.y += velocity.y * dt;
       }
       else
       {
@@ -70,7 +80,7 @@ void Alien::Update(float dt)
 
   if (this->hp <= 0)
   {
-    this->associated->RequestDelete();
+    this->associated.lock()->RequestDelete();
   }
 }
 

@@ -13,28 +13,28 @@ State::~State()
 void State::LoadAssets()
 {
   GameObject *go = new GameObject();
-
-  Sprite *bg = new Sprite("Assets/img/ocean.jpg", go);
+  std::weak_ptr<GameObject> goPtr = this->AddObject(go);
+  Sprite *bg = new Sprite("Assets/img/ocean.jpg", goPtr);
   go->AddComponent(bg);
 
-  CameraFollower *cameraFollower = new CameraFollower(go);
+  CameraFollower *cameraFollower = new CameraFollower(goPtr);
   go->AddComponent(cameraFollower);
-
-  this->AddObject(go);
 
   music.Open("Assets/audio/stageState.ogg");
   music.Play();
 
   GameObject *tileGo = new GameObject();
-  TileMap *tileMap = new TileMap(tileGo, "Assets/map/tileMap.txt", new TileSet(64, 64, "Assets/img/tileset.png"));
+  std::weak_ptr<GameObject> tileGoPtr = this->AddObject(tileGo);
+  TileMap *tileMap = new TileMap(tileGoPtr, "Assets/map/tileMap.txt", new TileSet(64, 64, "Assets/img/tileset.png"));
   tileGo->AddComponent(tileMap);
   this->AddObject(tileGo);
 
   // Alien
+
   GameObject *alien = new GameObject();
-  Alien *alienComponent = new Alien(alien, 4);
+  std::weak_ptr<GameObject> alienPtr = this->AddObject(alien);
+  Alien *alienComponent = new Alien(alienPtr, 4);
   alien->AddComponent(alienComponent);
-  this->AddObject(alien);
 }
 
 void State::Update(float dt)
@@ -74,8 +74,8 @@ void State::Render()
     if (auto lock = go.lock())
       lock->Render();
   }
-
-  SDL_RenderPresent(Game::getInstance()->GetRenderer());
+  std::weak_ptr<SDL_Renderer> renderer = Game::GetInstance()->GetRenderer();
+  SDL_RenderPresent(renderer.lock().get());
 }
 
 bool State::QuitRequested()
@@ -87,9 +87,13 @@ void State::Start()
 {
   LoadAssets();
 
-  for (auto go : objectArray)
+  for (int i = 0; i < objectArray.size(); i++)
   {
-    go->Start();
+    std::weak_ptr<GameObject> go = objectArray[i];
+    if (auto lock = go.lock())
+    {
+      lock->Start();
+    }
   }
 
   this->started = true;
@@ -97,13 +101,13 @@ void State::Start()
 
 std::weak_ptr<GameObject> State::AddObject(GameObject *go)
 {
-  std::shared_ptr<GameObject> sharedGo(go);
-  this->objectArray.push_back(sharedGo);
+  std::shared_ptr<GameObject> sharedPtr(go);
+  this->objectArray.push_back(sharedPtr);
   if (started)
   {
     go->Start();
   }
-  return std::weak_ptr<GameObject>(sharedGo);
+  return std::weak_ptr<GameObject>(objectArray.back());
 }
 
 std::weak_ptr<GameObject> State::GetObjectPtr(GameObject *go)

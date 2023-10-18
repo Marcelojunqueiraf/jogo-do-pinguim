@@ -1,15 +1,16 @@
 #pragma once
 #include "../../GameObject/GameObject.hpp"
+#include <memory>
 
 class GameObject;
 
 class Component
 {
 protected:
-  GameObject *associated;
+  std::weak_ptr<GameObject> associated;
 
 public:
-  Component(GameObject *associated);
+  Component(std::weak_ptr<GameObject> associated);
   virtual ~Component();
   virtual void Update(float dt) = 0;
   virtual void Render() = 0;

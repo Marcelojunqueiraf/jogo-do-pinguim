@@ -1,14 +1,13 @@
 #include "./CameraFollower.hpp"
 
-CameraFollower::CameraFollower(GameObject *associated) : Component(associated)
+CameraFollower::CameraFollower(std::weak_ptr<GameObject> associated) : Component(associated)
 {
-  std::cout << "CameraFollower" << std::endl;
 }
 
 void CameraFollower::Update(float dt)
 {
-  this->associated->box.x = Camera::GetInstance().pos.x;
-  this->associated->box.y = Camera::GetInstance().pos.y;
+  this->associated.lock()->box.x = Camera::GetInstance().pos.x;
+  this->associated.lock()->box.y = Camera::GetInstance().pos.y;
 }
 
 void CameraFollower::Render()

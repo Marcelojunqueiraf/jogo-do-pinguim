@@ -8,7 +8,7 @@ SDL_Texture *Resources::GetImage(std::string file)
 {
   if (Resources::imageTable.find(file) == Resources::imageTable.end())
   {
-    SDL_Texture *texture = IMG_LoadTexture(Game::getInstance()->GetRenderer(), file.c_str());
+    SDL_Texture *texture = IMG_LoadTexture(Game::GetInstance()->GetRenderer().lock().get(), file.c_str());
     if (texture == nullptr)
     {
       std::cerr << SDL_GetError() << std::endl;
