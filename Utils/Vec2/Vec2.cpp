@@ -44,3 +44,15 @@ Vec2 Vec2::normalize()
     return Vec2(0, 0);
   return Vec2(this->x / magnitude, this->y / magnitude);
 }
+
+Vec2 Vec2::rotate(float angle)
+{
+  float cs = cos(angle);
+  float sn = sin(angle);
+  return Vec2(this->x * cs - this->y * sn, this->x * sn + this->y * cs);
+}
+
+float Vec2::getAngle()
+{
+  return atan2(this->y, this->x);
+}

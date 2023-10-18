@@ -2,6 +2,8 @@
 #include "../Component/Component.hpp"
 #include <memory>
 #include "../Sprite/Sprite.hpp"
+#include "../../Game/Game.hpp"
+#include "../Bullet/Bullet.hpp"
 
 class Minion : public Component
 {

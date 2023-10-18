@@ -39,12 +39,13 @@ bool Minion::Is(std::string type)
 
 void Minion::Shoot(Vec2 target)
 {
-  // GameObject *bulletGO = new GameObject();
-  // bulletGO->box.x = this->associated->box.x;
-  // bulletGO->box.y = this->associated->box.y;
-  // Bullet *bullet = new Bullet(bulletGO, target, 200, 10, "assets/img/minionbullet2.png", 3, 0.1, true);
-  // bulletGO->AddComponent(bullet);
-  // Game::GetInstance()->)->GetCurrentState().AddObject(bulletGO);
+  GameObject *bulletGO = new GameObject();
+  bulletGO->box.x = this->associated.lock()->box.GetCenter().x;
+  bulletGO->box.y = this->associated.lock()->box.GetCenter().y;
+  std::weak_ptr<GameObject> bulletPtr = Game::GetInstance()->GetCurrentState().lock()->AddObject(bulletGO);
+  float angle = (target - this->associated.lock()->box.GetCenter()).getAngle();
+  Bullet *bullet = new Bullet(bulletPtr, angle, 500, 10, 1000, "Assets/img/minionbullet1.png");
+  bulletGO->AddComponent(bullet);
 }
 
 void Minion::Start()

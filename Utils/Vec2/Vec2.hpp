@@ -13,4 +13,6 @@ public:
   Vec2 operator/(float n);
   float magnitude();
   Vec2 normalize();
+  Vec2 rotate(float angle);
+  float getAngle();
 };

@@ -68,14 +68,23 @@ void Alien::Update(float dt)
     }
     else if (action.type == Action::ActionType::SHOOT)
     {
-      std::cout << "tiro" << std::endl;
+      int minionIndex = rand() % this->minionArray.size();
+      std::shared_ptr<GameObject> minionPtr = this->minionArray[minionIndex].lock();
+      Minion *minionComponent = (Minion *)minionPtr->GetComponent("Minion").lock().get();
+      if (minionComponent)
+      {
+        minionComponent->Shoot(action.pos);
+      }
       this->taskQueue.pop();
     }
   }
 
   if (InputManager::GetInstance().MousePress(RIGHT_MOUSE_BUTTON))
   {
-    this->taskQueue.push(Action(Action::ActionType::SHOOT, 0, 0));
+    InputManager &input = InputManager::GetInstance();
+    int x = input.GetMouseX() - this->associated.lock()->box.w / 2;
+    int y = input.GetMouseY() - this->associated.lock()->box.h / 2;
+    this->taskQueue.push(Action(Action::ActionType::SHOOT, x, y));
   }
 
   if (this->hp <= 0)

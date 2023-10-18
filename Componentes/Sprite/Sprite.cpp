@@ -13,10 +13,6 @@ Sprite::Sprite(std::string file, std::weak_ptr<GameObject> associated) : Compone
 
 Sprite::~Sprite()
 {
-  if (texture != nullptr)
-  {
-    SDL_DestroyTexture(texture);
-  }
 }
 
 void Sprite::Open(std::string file)
