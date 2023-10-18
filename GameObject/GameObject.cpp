@@ -5,6 +5,7 @@ GameObject::GameObject()
 {
   this->isDead = false;
   this->box = Rect();
+  this->angle = 0;
 }
 
 GameObject::~GameObject()

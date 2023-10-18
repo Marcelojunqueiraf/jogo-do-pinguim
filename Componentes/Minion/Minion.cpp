@@ -6,6 +6,8 @@ Minion::Minion(std::weak_ptr<GameObject> associated, std::weak_ptr<GameObject> a
 {
   this->arc = arcOffsetDeg;
   Sprite *minionSprite = new Sprite("Assets/img/minion.png", associated);
+  float scale = (rand() % 50) / 100.0 + 1.0;
+  minionSprite->SetScaleX(scale, scale);
   associated.lock()->AddComponent(minionSprite);
 }
 
@@ -25,6 +27,7 @@ void Minion::Update(float dt)
     this->arc += 0.5 * M_PI * dt;
     this->associated.lock()->box.x = center.x + 150 * std::cos(this->arc);
     this->associated.lock()->box.y = center.y + 150 * std::sin(this->arc);
+    this->associated.lock()->angle = this->arc + M_PI / 2;
   }
 }
 

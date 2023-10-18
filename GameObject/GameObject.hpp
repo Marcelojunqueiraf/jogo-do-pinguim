@@ -16,6 +16,7 @@ private:
 
 public:
   Rect box;
+  float angle;
   GameObject();
   ~GameObject();
   void Start();

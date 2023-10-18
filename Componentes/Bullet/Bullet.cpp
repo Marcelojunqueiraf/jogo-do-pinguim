@@ -2,6 +2,7 @@
 
 Bullet::Bullet(std::weak_ptr<GameObject> associated, float angle, float speed, int damage, float maxDistance, std::string sprite) : Component(associated)
 {
+  associated.lock()->angle = angle;
   this->speed = Vec2(speed, 0).rotate(angle);
   this->distanceLeft = maxDistance;
   this->damage = damage;

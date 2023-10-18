@@ -41,6 +41,8 @@ void Alien::Start()
 
 void Alien::Update(float dt)
 {
+  this->associated.lock()->angle -= 0.2 * M_PI * dt;
+
   if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
   {
     InputManager &input = InputManager::GetInstance();
@@ -68,9 +70,23 @@ void Alien::Update(float dt)
     }
     else if (action.type == Action::ActionType::SHOOT)
     {
-      int minionIndex = rand() % this->minionArray.size();
-      std::shared_ptr<GameObject> minionPtr = this->minionArray[minionIndex].lock();
-      Minion *minionComponent = (Minion *)minionPtr->GetComponent("Minion").lock().get();
+      std::shared_ptr<GameObject> chosenMinion;
+      float distance = 1000000;
+      for (auto minion : this->minionArray)
+      {
+        std::shared_ptr<GameObject> minionPtr = minion.lock();
+        if (minionPtr)
+        {
+          Vec2 minionPos = minionPtr->box.GetCenter();
+          float minionDistance = (minionPos - action.pos).magnitude();
+          if (minionDistance < distance)
+          {
+            distance = minionDistance;
+            chosenMinion = minionPtr;
+          }
+        }
+      }
+      Minion *minionComponent = (Minion *)chosenMinion.get()->GetComponent("Minion").lock().get();
       if (minionComponent)
       {
         minionComponent->Shoot(action.pos);

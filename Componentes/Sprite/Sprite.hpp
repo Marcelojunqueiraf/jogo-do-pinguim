@@ -15,6 +15,7 @@ private:
   int width;
   int height;
   SDL_Rect clipRect;
+  Vec2 scale;
 
 public:
   Sprite(std::weak_ptr<GameObject> associated);
@@ -23,6 +24,9 @@ public:
   void Start();
   void Open(std::string file);
   void SetClip(int x, int y, int w, int h);
+
+  void SetScaleX(float scaleX, float scaleY);
+  Vec2 GetScale();
 
   void Render(int x, int y);
   int GetWidth();
