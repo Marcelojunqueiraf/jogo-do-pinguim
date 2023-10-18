@@ -16,10 +16,14 @@ private:
   int height;
   SDL_Rect clipRect;
   Vec2 scale;
+  int frameCount;
+  int currentFrame;
+  float timeElapsed;
+  float frameTime;
 
 public:
   Sprite(std::weak_ptr<GameObject> associated);
-  Sprite(std::string file, std::weak_ptr<GameObject> associated);
+  Sprite(std::string file, std::weak_ptr<GameObject> associated, int frameCount = 1, float frameTime = 1);
   ~Sprite();
   void Start();
   void Open(std::string file);
@@ -36,4 +40,8 @@ public:
   void Update(float dt);
   void Render();
   bool Is(std::string type);
+
+  void SetFrame(int frame);
+  void SetFrameCount(int frameCount);
+  void SetFrameTime(float frameTime);
 };

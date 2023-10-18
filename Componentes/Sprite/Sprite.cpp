@@ -2,14 +2,22 @@
 
 Sprite::Sprite(std::weak_ptr<GameObject> associated) : Component(associated)
 {
+  this->frameCount = 1;
+  this->frameTime = 1;
+  this->timeElapsed = 0;
+  this->currentFrame = 0;
   texture = nullptr;
   scale = Vec2(1, 1);
 }
 
-Sprite::Sprite(std::string file, std::weak_ptr<GameObject> associated) : Component(associated)
+Sprite::Sprite(std::string file, std::weak_ptr<GameObject> associated, int frameCount, float frameTime) : Component(associated)
 {
+  this->frameCount = frameCount;
+  this->frameTime = frameTime;
+  this->timeElapsed = 0;
+  this->currentFrame = 0;
+  this->scale = Vec2(1, 1);
   texture = nullptr;
-  scale = Vec2(1, 1);
   Open(file);
 }
 
@@ -30,10 +38,10 @@ void Sprite::Open(std::string file)
     std::terminate();
   }
   SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-  SetClip(0, 0, width, height);
+  SetClip(0, 0, width / frameCount, height);
   if (!associated.expired())
   {
-    associated.lock()->box.w = width / 2;
+    associated.lock()->box.w = width / frameCount / 2;
     associated.lock()->box.h = height / 2;
   }
 }
@@ -76,6 +84,13 @@ bool Sprite::IsOpen()
 
 void Sprite::Update(float dt)
 {
+  timeElapsed += dt;
+  if (timeElapsed > frameTime)
+  {
+    timeElapsed -= frameTime;
+    currentFrame = (currentFrame + 1) % frameCount;
+    SetFrame(currentFrame);
+  }
 }
 
 void Sprite::Render()
@@ -103,4 +118,22 @@ void Sprite::SetScaleX(float scaleX, float scaleY)
 Vec2 Sprite::GetScale()
 {
   return this->scale;
+}
+
+void Sprite::SetFrame(int frame)
+{
+  this->currentFrame = frame;
+  SetClip(currentFrame * width / frameCount, 0, width / frameCount, height);
+  associated.lock()->box.w = width / frameCount * scale.x;
+}
+
+void Sprite::SetFrameCount(int frameCount)
+{
+  this->frameCount = frameCount;
+  SetFrame(0);
+}
+
+void Sprite::SetFrameTime(float frameTime)
+{
+  this->frameTime = frameTime;
 }
