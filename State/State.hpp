@@ -18,6 +18,8 @@
 #include "../Componentes/Alien/Alien.hpp"
 #include "../Utils/InputManager/InputManager.hpp"
 #include "../Camera/Camera.hpp"
+#include "../Componentes/PenguinBody/PenguinBody.hpp"
+#include "../Componentes/PenguinCannon/PenguinCannon.hpp"
 
 class State
 {

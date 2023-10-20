@@ -7,7 +7,7 @@ Bullet::Bullet(std::weak_ptr<GameObject> associated, float angle, float speed, i
   this->distanceLeft = maxDistance;
   this->damage = damage;
 
-  Sprite *spriteComponent = new Sprite(sprite, associated, 3, 0.2);
+  Sprite *spriteComponent = new Sprite(sprite, associated, 4, 0.2);
   this->associated.lock()->AddComponent(spriteComponent);
   // this->associated.lock()->AddComponent(new Collider(associated));
 };

@@ -35,6 +35,21 @@ void State::LoadAssets()
   std::weak_ptr<GameObject> alienPtr = this->AddObject(alien);
   Alien *alienComponent = new Alien(alienPtr, 4);
   alien->AddComponent(alienComponent);
+
+  // Pinguim
+  GameObject *penguin = new GameObject();
+  std::weak_ptr<GameObject> penguinPtr = this->AddObject(penguin);
+  PenguinBody *penguinBody = new PenguinBody(penguinPtr);
+  penguin->AddComponent(penguinBody);
+  Sprite *penguinSprite = new Sprite("Assets/img/penguin.png", penguinPtr);
+  penguin->AddComponent(penguinSprite);
+
+  GameObject *penguinCannon = new GameObject();
+  std::weak_ptr<GameObject> penguinCannonPtr = this->AddObject(penguinCannon);
+  PenguinCannon *penguinCannonComponent = new PenguinCannon(penguinCannonPtr, penguinPtr);
+  penguinCannon->AddComponent(penguinCannonComponent);
+  Sprite *penguinCannonSprite = new Sprite("Assets/img/cubngun.png", penguinCannonPtr);
+  penguin->AddComponent(penguinCannonSprite);
 }
 
 void State::Update(float dt)
@@ -72,7 +87,8 @@ void State::Render()
   {
     std::weak_ptr<GameObject> go = SharedGo;
     if (auto lock = go.lock())
-      lock->Render();
+      if (!lock->IsDead())
+        lock->Render();
   }
   std::weak_ptr<SDL_Renderer> renderer = Game::GetInstance()->GetRenderer();
   SDL_RenderPresent(renderer.lock().get());
