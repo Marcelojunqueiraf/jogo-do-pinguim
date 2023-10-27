@@ -109,10 +109,6 @@ void Alien::Update(float dt)
   }
 }
 
-void Alien::Render()
-{
-}
-
 bool Alien::Is(std::string type)
 {
   return type == "Alien";

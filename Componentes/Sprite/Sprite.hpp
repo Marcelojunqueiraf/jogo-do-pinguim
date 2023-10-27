@@ -24,8 +24,7 @@ private:
 public:
   Sprite(std::weak_ptr<GameObject> associated);
   Sprite(std::string file, std::weak_ptr<GameObject> associated, int frameCount = 1, float frameTime = 1);
-  ~Sprite();
-  void Start();
+
   void Open(std::string file);
   void SetClip(int x, int y, int w, int h);
 

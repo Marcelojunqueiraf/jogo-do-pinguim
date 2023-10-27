@@ -10,15 +10,7 @@ void CameraFollower::Update(float dt)
   this->associated.lock()->box.y = Camera::GetInstance().pos.y;
 }
 
-void CameraFollower::Render()
-{
-}
-
 bool CameraFollower::Is(std::string type)
 {
   return type == "CameraFollower";
-}
-
-void CameraFollower::Start()
-{
 }

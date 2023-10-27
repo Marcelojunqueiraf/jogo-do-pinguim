@@ -18,7 +18,6 @@ private:
 
 public:
   TileMap(std::weak_ptr<GameObject> associated, std::string file, TileSet *tileSet);
-  void Start();
   void Load(std::string file);
   void SetTileSet(TileSet *tileSet);
   int *At(int x, int y, int z = 0);
@@ -28,5 +27,4 @@ public:
   int GetHeight();
   int GetDepth();
   bool Is(std::string type);
-  void Update(float dt);
 };

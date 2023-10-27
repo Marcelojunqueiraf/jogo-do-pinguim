@@ -23,10 +23,6 @@ void Bullet::Update(float dt)
   this->associated.lock()->box.y += this->speed.y * dt;
 }
 
-void Bullet::Render()
-{
-}
-
 bool Bullet::Is(std::string type)
 {
   return type == "Bullet";
@@ -35,8 +31,4 @@ bool Bullet::Is(std::string type)
 int Bullet::GetDamage()
 {
   return this->damage;
-}
-
-void Bullet::Start()
-{
 }

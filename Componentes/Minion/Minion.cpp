@@ -11,10 +11,6 @@ Minion::Minion(std::weak_ptr<GameObject> associated, std::weak_ptr<GameObject> a
   associated.lock()->AddComponent(minionSprite);
 }
 
-Minion::~Minion()
-{
-}
-
 void Minion::Update(float dt)
 {
   if (this->alienCenter.expired())
@@ -31,10 +27,6 @@ void Minion::Update(float dt)
   }
 }
 
-void Minion::Render()
-{
-}
-
 bool Minion::Is(std::string type)
 {
   return (type == "Minion");
@@ -49,8 +41,4 @@ void Minion::Shoot(Vec2 target)
   float angle = (target - this->associated.lock()->box.GetCenter()).getAngle();
   Bullet *bullet = new Bullet(bulletPtr, angle, 500, 10, 1000, "Assets/img/minionbullet2.png");
   bulletGO->AddComponent(bullet);
-}
-
-void Minion::Start()
-{
 }

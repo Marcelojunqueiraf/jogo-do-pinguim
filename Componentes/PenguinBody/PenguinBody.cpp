@@ -11,14 +11,6 @@ PenguinBody::PenguinBody(std::weak_ptr<GameObject> associated) : Component(assoc
   camera.Follow(associated.lock().get());
 }
 
-PenguinBody::~PenguinBody()
-{
-}
-
-void PenguinBody::Start()
-{
-}
-
 void PenguinBody::Update(float dt)
 {
   if (hp <= 0)
@@ -45,10 +37,6 @@ void PenguinBody::Update(float dt)
     linearSpeed += 100 * dt;
   if (input.IsKeyDown(SDLK_s) && linearSpeed >= 100 * dt)
     linearSpeed -= 100 * dt;
-}
-
-void PenguinBody::Render()
-{
 }
 
 bool PenguinBody::Is(std::string type)

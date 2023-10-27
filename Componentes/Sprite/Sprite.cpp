@@ -21,10 +21,6 @@ Sprite::Sprite(std::string file, std::weak_ptr<GameObject> associated, int frame
   Open(file);
 }
 
-Sprite::~Sprite()
-{
-}
-
 void Sprite::Open(std::string file)
 {
   if (texture != nullptr)
@@ -101,10 +97,6 @@ void Sprite::Render()
 bool Sprite::Is(std::string type)
 {
   return type == "Sprite";
-}
-
-void Sprite::Start()
-{
 }
 
 void Sprite::SetScaleX(float scaleX, float scaleY)

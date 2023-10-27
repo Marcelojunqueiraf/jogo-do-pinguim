@@ -14,9 +14,7 @@ class Bullet : public Component
 public:
   Bullet(std::weak_ptr<GameObject> associated, float angle, float speed, int damage, float maxDistance, std::string sprite);
   void Update(float dt);
-  void Render();
   bool Is(std::string type);
-  void Start();
   int GetDamage();
 
 private:

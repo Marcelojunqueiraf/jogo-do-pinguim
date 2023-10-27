@@ -8,10 +8,6 @@ PenguinCannon::PenguinCannon(std::weak_ptr<GameObject> associated, std::weak_ptr
   penguinBodyPtr->SetPcannon(associated);
 }
 
-PenguinCannon::~PenguinCannon()
-{
-}
-
 void PenguinCannon::Update(float dt)
 {
   InputManager &inputManager = InputManager::GetInstance();
@@ -30,10 +26,6 @@ void PenguinCannon::Update(float dt)
   }
 }
 
-void PenguinCannon::Render()
-{
-}
-
 bool PenguinCannon::Is(std::string type)
 {
   return type == "PenguinCannon";
@@ -47,8 +39,4 @@ void PenguinCannon::Shoot()
   std::weak_ptr<GameObject> bulletPtr = Game::GetInstance()->GetCurrentState().lock()->AddObject(bulletGO);
   Bullet *bullet = new Bullet(bulletPtr, this->angle, 500, 10, 1000, "Assets/img/penguinbullet.png");
   bulletGO->AddComponent(bullet);
-}
-
-void PenguinCannon::Start()
-{
 }
