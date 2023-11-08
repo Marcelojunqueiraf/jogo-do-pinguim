@@ -20,6 +20,9 @@
 #include "../Camera/Camera.hpp"
 #include "../Componentes/PenguinBody/PenguinBody.hpp"
 #include "../Componentes/PenguinCannon/PenguinCannon.hpp"
+#include "../Componentes/Collider/Collider.hpp"
+#include "../Utils/Collision/Collision.cpp"
+#include "../Componentes/Collider/Collider.hpp"
 
 class State
 {

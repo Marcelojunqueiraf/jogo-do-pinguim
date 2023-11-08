@@ -10,6 +10,7 @@
 #include "../PenguinBody/PenguinBody.hpp"
 #include "../Bullet/Bullet.hpp"
 #include "../../Utils/InputManager/InputManager.hpp"
+#include "../../Utils/Timer/Timer.hpp"
 
 class PenguinCannon : public Component
 {
@@ -22,4 +23,5 @@ public:
 private:
   std::weak_ptr<GameObject> pbody;
   float angle;
+  Timer shootTimer;
 };

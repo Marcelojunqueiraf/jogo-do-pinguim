@@ -1,14 +1,22 @@
 #include "./Alien.hpp"
 
+int Alien::alienCount = 0;
+
 Alien::Alien(std::weak_ptr<GameObject> associated, int nMinions) : Component(associated)
 {
   Sprite *alienSprite = new Sprite("Assets/img/alien.png", associated);
   associated.lock()->AddComponent(alienSprite);
 
+  Collider *alienCollider = new Collider(associated, {1, 2});
+  associated.lock()->AddComponent(alienCollider);
+
   this->speed = 200;
   this->hp = 30;
   this->minionArray = std::vector<std::weak_ptr<GameObject>>();
-  this->taskQueue = std::queue<Action>();
+  this->state = AlienState::RESTING;
+  restTimer = Timer();
+  this->destination = Vec2(0, 0);
+  Alien::alienCount += 1;
 
   for (int i = 0; i < nMinions; i++)
   {
@@ -43,66 +51,52 @@ void Alien::Update(float dt)
 {
   this->associated.lock()->angle -= 0.2 * M_PI * dt;
 
-  // if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON))
-  // {
-  //   InputManager &input = InputManager::GetInstance();
-  //   int x = input.GetMouseX() - this->associated.lock()->box.w / 2;
-  //   int y = input.GetMouseY() - this->associated.lock()->box.h / 2;
-  //   this->taskQueue.push(Action(Action::MOVE, x, y));
-  // }
+  this->restTimer.Update(dt);
 
-  // if (!this->taskQueue.empty())
-  // {
-  //   Action action = this->taskQueue.front();
-  //   if (action.type == Action::ActionType::MOVE)
-  //   {
-  //     Vec2 dist = action.pos - this->associated.lock()->box.GetCenter();
-  //     if (dist.magnitude() > this->speed * dt)
-  //     {
-  //       Vec2 velocity = dist.normalize() * this->speed;
-  //       this->associated.lock()->box.x += velocity.x * dt;
-  //       this->associated.lock()->box.y += velocity.y * dt;
-  //     }
-  //     else
-  //     {
-  //       this->taskQueue.pop();
-  //     }
-  //   }
-  //   else if (action.type == Action::ActionType::SHOOT)
-  //   {
-  //     std::shared_ptr<GameObject> chosenMinion;
-  //     float distance = 1000000;
-  //     for (auto minion : this->minionArray)
-  //     {
-  //       std::shared_ptr<GameObject> minionPtr = minion.lock();
-  //       if (minionPtr)
-  //       {
-  //         Vec2 minionPos = minionPtr->box.GetCenter();
-  //         float minionDistance = (minionPos - action.pos).magnitude();
-  //         if (minionDistance < distance)
-  //         {
-  //           distance = minionDistance;
-  //           chosenMinion = minionPtr;
-  //         }
-  //       }
-  //     }
-  //     Minion *minionComponent = (Minion *)chosenMinion.get()->GetComponent("Minion").lock().get();
-  //     if (minionComponent)
-  //     {
-  //       minionComponent->Shoot(action.pos);
-  //     }
-  //     this->taskQueue.pop();
-  //   }
-  // }
+  if (state == AlienState::RESTING && this->restTimer.Get() > 1)
+  {
+    this->state = AlienState::MOVING;
+    this->destination = Camera::GetInstance().pos;
+    destination.x += 512;
+    destination.y += 300;
+  }
+  else if (state == AlienState::MOVING && (this->destination - this->associated.lock()->box.GetCenter()).magnitude() < 6)
+  {
+    std::shared_ptr<GameObject> chosenMinion;
+    float distance = 1000000;
+    for (auto minion : this->minionArray)
+    {
+      std::shared_ptr<GameObject> minionPtr = minion.lock();
+      if (minionPtr)
+      {
+        Vec2 minionPos = minionPtr->box.GetCenter();
+        float minionDistance = (minionPos - destination).magnitude();
+        if (minionDistance < distance)
+        {
+          distance = minionDistance;
+          chosenMinion = minionPtr;
+        }
+      }
+    }
+    Minion *minionComponent = (Minion *)chosenMinion.get()->GetComponent("Minion").lock().get();
+    if (minionComponent)
+    {
+      this->destination = Camera::GetInstance().pos;
+      destination.x += 512;
+      destination.y += 300;
+      minionComponent->Shoot(destination);
+    }
 
-  // if (InputManager::GetInstance().MousePress(RIGHT_MOUSE_BUTTON))
-  // {
-  //   InputManager &input = InputManager::GetInstance();
-  //   int x = input.GetMouseX() - this->associated.lock()->box.w / 2;
-  //   int y = input.GetMouseY() - this->associated.lock()->box.h / 2;
-  //   this->taskQueue.push(Action(Action::ActionType::SHOOT, x, y));
-  // }
-
+    this->state = AlienState::RESTING;
+    this->restTimer.Restart();
+  }
+  if (state == AlienState::MOVING)
+  {
+    Vec2 dist = destination - this->associated.lock()->box.GetCenter();
+    Vec2 velocity = dist.normalize() * this->speed;
+    this->associated.lock()->box.x += velocity.x * dt;
+    this->associated.lock()->box.y += velocity.y * dt;
+  }
   if (this->hp <= 0)
   {
     this->associated.lock()->RequestDelete();
@@ -112,4 +106,16 @@ void Alien::Update(float dt)
 bool Alien::Is(std::string type)
 {
   return type == "Alien";
+}
+
+void Alien::NotifyCollision(std::weak_ptr<GameObject> other)
+{
+  if (auto bulletPtr = other.lock()->GetComponent("Bullet").lock())
+  {
+    Bullet *bullet = (Bullet *)bulletPtr.get();
+    if (!bullet->targetPlayer)
+    {
+      this->hp -= bullet->GetDamage();
+    }
+  }
 }

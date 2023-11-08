@@ -12,10 +12,12 @@
 class Bullet : public Component
 {
 public:
-  Bullet(std::weak_ptr<GameObject> associated, float angle, float speed, int damage, float maxDistance, std::string sprite);
+  Bullet(std::weak_ptr<GameObject> associated, float angle, float speed, int damage, float maxDistance, std::string sprite, bool targetPlayer = false);
   void Update(float dt);
   bool Is(std::string type);
   int GetDamage();
+  void NotifyCollision(std::weak_ptr<GameObject> other);
+  bool targetPlayer;
 
 private:
   Vec2 speed;

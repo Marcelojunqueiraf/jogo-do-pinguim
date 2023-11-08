@@ -4,6 +4,7 @@
 #include <memory>
 #include "../Componentes/Component/Component.hpp"
 #include "../Utils/Rect/Rect.hpp"
+#include "../Componentes/Collider/Collider.hpp"
 
 class Component;
 

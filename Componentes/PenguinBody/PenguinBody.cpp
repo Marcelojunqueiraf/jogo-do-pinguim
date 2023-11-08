@@ -48,3 +48,15 @@ void PenguinBody::SetPcannon(std::weak_ptr<GameObject> pcannon)
 {
   this->pcannon = pcannon;
 }
+
+void PenguinBody::NotifyCollision(std::weak_ptr<GameObject> other)
+{
+  if (auto bulletPtr = other.lock()->GetComponent("Bullet").lock())
+  {
+    Bullet *bullet = (Bullet *)bulletPtr.get();
+    if (bullet->targetPlayer)
+    {
+      this->hp -= bullet->GetDamage();
+    }
+  }
+}

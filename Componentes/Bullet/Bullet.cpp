@@ -1,15 +1,16 @@
 #include "./Bullet.hpp"
 
-Bullet::Bullet(std::weak_ptr<GameObject> associated, float angle, float speed, int damage, float maxDistance, std::string sprite) : Component(associated)
+Bullet::Bullet(std::weak_ptr<GameObject> associated, float angle, float speed, int damage, float maxDistance, std::string sprite, bool targetPlayer) : Component(associated)
 {
   associated.lock()->angle = angle;
   this->speed = Vec2(speed, 0).rotate(angle);
   this->distanceLeft = maxDistance;
   this->damage = damage;
+  this->targetPlayer = targetPlayer;
 
   Sprite *spriteComponent = new Sprite(sprite, associated, 4, 0.2);
   this->associated.lock()->AddComponent(spriteComponent);
-  // this->associated.lock()->AddComponent(new Collider(associated));
+  this->associated.lock()->AddComponent(new Collider(associated, {1, 2}));
 };
 
 void Bullet::Update(float dt)
@@ -31,4 +32,17 @@ bool Bullet::Is(std::string type)
 int Bullet::GetDamage()
 {
   return this->damage;
+}
+
+void Bullet::NotifyCollision(std::weak_ptr<GameObject> other)
+{
+  std::shared_ptr<GameObject> otherPtr = other.lock();
+  if (this->targetPlayer && otherPtr->GetComponent("PenguinBody").lock() != nullptr)
+  {
+    associated.lock()->RequestDelete();
+  }
+  else if (!this->targetPlayer && otherPtr->GetComponent("Alien").lock() != nullptr)
+  {
+    associated.lock()->RequestDelete();
+  }
 }

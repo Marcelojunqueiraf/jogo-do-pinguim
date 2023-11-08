@@ -6,10 +6,12 @@ PenguinCannon::PenguinCannon(std::weak_ptr<GameObject> associated, std::weak_ptr
   this->angle = 0;
   PenguinBody *penguinBodyPtr = (PenguinBody *)penguinBody.lock()->GetComponent("PenguinBody").lock().get();
   penguinBodyPtr->SetPcannon(associated);
+  shootTimer = Timer();
 }
 
 void PenguinCannon::Update(float dt)
 {
+  shootTimer.Update(dt);
   InputManager &inputManager = InputManager::GetInstance();
 
   this->angle = atan2(inputManager.GetMouseY() - (this->associated.lock()->box.GetCenter().y), inputManager.GetMouseX() - (this->associated.lock()->box.GetCenter().x));
@@ -22,7 +24,11 @@ void PenguinCannon::Update(float dt)
 
   if (input.MousePress(LEFT_MOUSE_BUTTON))
   {
-    Shoot();
+    if (shootTimer.Get() > 0.3)
+    {
+      Shoot();
+      shootTimer.Restart();
+    }
   }
 }
 
@@ -37,6 +43,6 @@ void PenguinCannon::Shoot()
   bulletGO->box.x = this->associated.lock()->box.GetCenter().x;
   bulletGO->box.y = this->associated.lock()->box.GetCenter().y;
   std::weak_ptr<GameObject> bulletPtr = Game::GetInstance()->GetCurrentState().lock()->AddObject(bulletGO);
-  Bullet *bullet = new Bullet(bulletPtr, this->angle, 500, 10, 1000, "Assets/img/penguinbullet.png");
+  Bullet *bullet = new Bullet(bulletPtr, this->angle, 500, 10, 1000, "Assets/img/penguinbullet.png", false);
   bulletGO->AddComponent(bullet);
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include "../../GameObject/GameObject.hpp"
 #include <memory>
 
 class GameObject;

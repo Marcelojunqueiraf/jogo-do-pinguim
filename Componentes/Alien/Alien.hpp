@@ -8,32 +8,30 @@
 #include "../../Utils/InputManager/InputManager.hpp"
 #include "../Sprite/Sprite.hpp"
 #include "../Minion/Minion.hpp"
+#include "../Collider/Collider.hpp"
+#include "../../Utils/Timer/Timer.hpp"
 
 class Alien : public Component
 {
-private:
-  class Action
-  {
-  public:
-    enum ActionType
-    {
-      MOVE,
-      SHOOT
-    };
-    Action(ActionType type, float x, float y) : type(type), pos(x, y) {}
-    ActionType type;
-    Vec2 pos;
-  };
-
-  float speed;
-  int hp;
-  std::vector<std::weak_ptr<GameObject>> minionArray;
-  std::queue<Action> taskQueue;
-
 public:
   Alien(std::weak_ptr<GameObject> associated, int nMinions);
   ~Alien();
   void Start();
   void Update(float dt);
   bool Is(std::string type);
+  virtual void NotifyCollision(std::weak_ptr<GameObject> other);
+  static int alienCount;
+
+private:
+  float speed;
+  int hp;
+  std::vector<std::weak_ptr<GameObject>> minionArray;
+  enum AlienState
+  {
+    MOVING,
+    RESTING
+  };
+  AlienState state;
+  Timer restTimer;
+  Vec2 destination;
 };
