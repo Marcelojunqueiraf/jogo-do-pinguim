@@ -71,13 +71,18 @@ void StageState::Update(float dt)
 
   Camera::GetInstance().Update(dt);
 
-  if (alienTimer.Get() > 1)
+  if (alienTimer.Get() > 5)
   {
     std::cout << "criando alien" << std::endl;
     GameObject *alien = new GameObject();
     std::weak_ptr<GameObject> alienPtr = this->AddObject(alien);
     Alien *alienComponent = new Alien(alienPtr, 4);
     alien->AddComponent(alienComponent);
+
+    float angle = rand() % 360 * (M_PI / 180);
+    alien->box.x = Camera::GetInstance().pos.x + 1000 * cos(angle);
+    alien->box.y = Camera::GetInstance().pos.y + 1000 * sin(angle);
+
     alienTimer.Restart();
   }
   alienTimer.Update(dt);
