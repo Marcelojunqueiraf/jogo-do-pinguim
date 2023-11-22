@@ -18,4 +18,5 @@ public:
   void Update(float dt);
   static Camera &GetInstance();
   Camera();
+  void Reset();
 };

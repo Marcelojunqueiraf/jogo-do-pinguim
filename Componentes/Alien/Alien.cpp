@@ -16,6 +16,7 @@ Alien::Alien(std::weak_ptr<GameObject> associated, int nMinions) : Component(ass
   this->state = AlienState::RESTING;
   restTimer = Timer();
   this->destination = Vec2(0, 0);
+  std::cout << "Alien constructor" << std::endl;
   Alien::alienCount += 1;
 
   for (int i = 0; i < nMinions; i++)
@@ -99,6 +100,7 @@ void Alien::Update(float dt)
   }
   if (this->hp <= 0)
   {
+    Alien::alienCount -= 1;
     this->associated.lock()->RequestDelete();
   }
 }

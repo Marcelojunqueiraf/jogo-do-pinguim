@@ -3,7 +3,9 @@
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
 #include "../SDL_include.h"
-#include "../State/State.hpp"
+
+#include "../MenuState/MenuState.hpp"
+#include "../Utils/Resources/Resources.hpp"
 #include <memory>
 #include <string>
 
@@ -14,6 +16,8 @@ class Game
 private:
   static Game *instance;
   std::shared_ptr<State> state;
+  std::shared_ptr<State> nextState;
+  bool changeRequested;
   std::shared_ptr<SDL_Renderer> renderer;
   std::shared_ptr<SDL_Window> window;
   bool running;
@@ -30,4 +34,5 @@ public:
   int GetHeight();
   ~Game();
   std::weak_ptr<State> GetCurrentState();
+  void SetCurrentState(State *state);
 };

@@ -7,39 +7,34 @@
 #include <memory>
 #include <vector>
 
-#include "../Componentes/Sprite/Sprite.hpp"
-#include "../Music/Music.hpp"
-#include "../GameObject/GameObject.hpp"
-#include "../Utils/Vec2/Vec2.hpp"
-#include "../Utils/Rect/Rect.hpp"
-#include "../Componentes/Sound/Sound.hpp"
-#include "../Componentes/TileMap/TileMap.hpp"
-#include "../Componentes/CameraFollower/CameraFollower.hpp"
-#include "../Componentes/Alien/Alien.hpp"
-#include "../Utils/InputManager/InputManager.hpp"
-#include "../Camera/Camera.hpp"
-#include "../Componentes/PenguinBody/PenguinBody.hpp"
-#include "../Componentes/PenguinCannon/PenguinCannon.hpp"
-#include "../Componentes/Collider/Collider.hpp"
-#include "../Utils/Collision/Collision.cpp"
-#include "../Componentes/Collider/Collider.hpp"
+class Game;
+class GameObject;
 
 class State
 {
-private:
-  Music music;
-  bool quitRequested;
-  bool started;
-  std::vector<std::shared_ptr<GameObject>> objectArray;
-
 public:
   State();
   ~State();
-  void LoadAssets();
-  void Update(float dt);
-  void Render();
-  bool QuitRequested();
-  void Start();
+  virtual void LoadAssets() = 0;
+  virtual void Update(float dt) = 0;
+  virtual void Render() = 0;
+
+  virtual void Start() = 0;
+
   std::weak_ptr<GameObject> AddObject(GameObject *go);
   std::weak_ptr<GameObject> GetObjectPtr(GameObject *go);
+
+  bool PopRequested();
+  bool QuitRequested();
+
+protected:
+  void StartArray();
+  virtual void UpdateArray(float dt);
+  virtual void RenderArray();
+
+  bool popRequested;
+  bool quitRequested;
+  bool started;
+
+  std::vector<std::shared_ptr<GameObject>> objectArray;
 };

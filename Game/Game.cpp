@@ -6,6 +6,8 @@ Game *Game::instance = nullptr;
 
 Game::Game(std::string title, int width, int height)
 {
+  nextState = std::shared_ptr<State>();
+  changeRequested = false;
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0)
   {
@@ -67,12 +69,27 @@ Game *Game::GetInstance()
 
 void Game::run()
 {
-  state = std::make_shared<State>();
-  state->Start();
+  StageState *stageState = new StageState();
+  std::cout << "criado" << std::endl;
+  free(stageState);
+
+  MenuState *menuState = new MenuState();
+
+  SetCurrentState(menuState);
 
   bool running = true;
   while (running)
   {
+    if (changeRequested)
+    {
+      Camera::GetInstance().Reset();
+      this->state.swap(nextState);
+      changeRequested = false;
+
+      this->state->LoadAssets();
+      this->state->Start();
+    }
+
     this->CalculateDeltaTime();
     state->Update(this->dt);
     state->Render();
@@ -120,4 +137,10 @@ std::weak_ptr<SDL_Renderer> Game::GetRenderer()
 std::weak_ptr<State> Game::GetCurrentState()
 {
   return state;
+}
+
+void Game::SetCurrentState(State *state)
+{
+  nextState = std::shared_ptr<State>(state);
+  changeRequested = true;
 }

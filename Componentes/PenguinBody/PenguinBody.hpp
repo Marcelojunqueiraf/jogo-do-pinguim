@@ -13,6 +13,7 @@ public:
   bool Is(std::string type);
   void SetPcannon(std::weak_ptr<GameObject> pcannon);
   void NotifyCollision(std::weak_ptr<GameObject> other);
+  int GetHp() { return this->hp; }
 
 private:
   Vec2 speed;

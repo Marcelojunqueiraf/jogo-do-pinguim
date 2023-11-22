@@ -43,6 +43,11 @@ Camera &Camera::GetInstance()
 
 Camera::Camera()
 {
+  Reset();
+}
+
+void Camera::Reset()
+{
   this->speed = Vec2(200, 200);
   this->pos = Vec2(0, 0);
   this->focus = nullptr;
